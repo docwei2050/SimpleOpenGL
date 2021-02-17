@@ -104,7 +104,7 @@ public class SimpleTextureRender implements SimpleGlRender {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
 
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, 1280, 720, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, 1170, 1810, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureId, 0);
 
         if (GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER) != GLES20.GL_FRAMEBUFFER_COMPLETE) {
@@ -114,6 +114,7 @@ public class SimpleTextureRender implements SimpleGlRender {
         }
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+       // imageTextureId = loadTexture(R.mipmap.a);
         imageTextureId = loadTexture(R.mipmap.a);
 
     }
@@ -135,16 +136,16 @@ public class SimpleTextureRender implements SimpleGlRender {
     @Override
     public void onSurfaceChanged(int width, int height) {
         GLES20.glViewport(0, 0, width, height);
+        Log.e("simpleGl","widht--."+width+"---"+height);
         mFboRender.onChange(width, height);
         
         if (width > height) {
             Matrix.orthoM(matrix, 0, -width / ((height / 1280f) * 720f), width / ((height / 1280f) * 720f), -1, 1f, -1f, 1f);
         } else {
-            Matrix.orthoM(matrix, 0, -1, 1, -height / ((width / 720f) * 1280f), height / ((width / 720f) * 1280f), -1f, 1f);
+           // Matrix.orthoM(matrix, 0, -1, -height / ((width / 720f) * 1280f), height / ((width / 720f) * 1280f),1, -1f, 1f);
+            Matrix.orthoM(matrix, 0, -1,1, -height / ((width / 720f) * 1280f), height / ((width / 720f) * 1280f), -1f, 1f);
         }
         Matrix.rotateM(matrix, 0, 180, 1, 0, 0);
-        Matrix.rotateM(matrix, 0, 180, 0, 0, 1);
-
 
     }
 
