@@ -22,7 +22,12 @@ public class SimpleTextureRender implements SimpleGlRender {
             -1f, -1f,
             1f, -1f,
             -1, 1f,
-            1f, 1f
+            1f, 1f,
+            //第二张图片的位置
+            -0.5f, -0.5f,
+            0.5f, -0.5f,
+            -0.5f, 0.5f,
+            0.5f, 0.5f
     };
     private FloatBuffer vertextBuffer;
     private float[] fragmentData = {
@@ -40,6 +45,7 @@ public class SimpleTextureRender implements SimpleGlRender {
     private int vboId;
     private int fBOId;
     private int imageTextureId;
+    private int imageTextureId2;
     private FboRender mFboRender;
     private int umatrix;
     private float[] matrix = new float[16];
@@ -122,6 +128,7 @@ public class SimpleTextureRender implements SimpleGlRender {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         // imageTextureId = loadTexture(R.mipmap.a);
         imageTextureId = loadTexture(R.mipmap.a);
+        imageTextureId2 = loadTexture(R.mipmap.b);
         if (mOnTextureIdReadyListener != null) {
             //这个就是要共享的纹理 这个在后面会被搞成离屏缓冲的纹理
             mOnTextureIdReadyListener.success(textureId);
@@ -174,18 +181,32 @@ public class SimpleTextureRender implements SimpleGlRender {
 
         GLES20.glUseProgram(program);
         GLES20.glUniformMatrix4fv(umatrix, 1, false, matrix, 0);
-       GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, imageTextureId);
+
 
         //绑定vbo以便能使用顶点坐标和纹理坐标
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId);
 
+
         GLES20.glEnableVertexAttribArray(vPosition);
-        //从vbo取
+        //从vbo取   //绘制第一张图片
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, imageTextureId);
         GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 0);
         GLES20.glEnableVertexAttribArray(fPosition);
         GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexData.length * 4);
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+
+
+        //从vbo取   //绘制第二张图片     32 = 4个顶点*8
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, imageTextureId2);
+        GLES20.glVertexAttribPointer(vPosition, 2, GLES20.GL_FLOAT, false, 8, 32);
+        GLES20.glEnableVertexAttribArray(fPosition);
+        GLES20.glVertexAttribPointer(fPosition, 2, GLES20.GL_FLOAT, false, 8, vertexData.length * 4);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+
+
+
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
        // GLES20.glViewport(0, 0, width, height);
